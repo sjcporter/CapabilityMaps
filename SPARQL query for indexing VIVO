@@ -1,0 +1,229 @@
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:   <http://www.w3.org/2002/07/owl#>
+PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX bibo: <http://purl.org/ontology/bibo/>
+PREFIX fae: <http://www.findanexpert.unimelb.edu.au/ontology/>
+PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
+PREFIX vivo: <http://vivoweb.org/ontology/core#>
+PREFIX fb: <http://www.funnelback.com/ontology/>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX fn: <http://www.w3.org/2005/xpath-functions#>
+
+CONSTRUCT {?person fb:url         ?url;
+                   fb:publication ?publicationLabel;
+                   fb:agreement   ?agreementLabel ;
+                   fb:overview    ?overview ;
+                   fb:researchOverview    ?researchOverview ;
+                   foaf:firstName ?firstName; 
+                   foaf:lastName  ?lastName;
+                   fb:org ?orgLabel ;
+                   fb:internationalLinkage  ?internationalLinkageLabel ;
+                   fb:editor ?editorRoleLabel ;
+                   fb:exhibition ?exhibitionLabel;
+                   fb:performance ?performanceLabel;
+                   fb:curatedExhibition ?curatedExhibition ;
+		   fb:mediaOnly          ?mediaOnly ;
+                   fb:subjectArea       ?subjectAreaLabel ;
+		   fb:homepage          ?homepage;
+		   fae:availableForSupervision ?supervision;
+                   fae:gradResearchAddress ?gradResearchAddress;
+		   vivo:geographicFocus ?countryLabel;
+		   fae:supervisorStatement ?supervision;
+		   fb:imageURL ?thumbnailURL;
+                   vivo:phoneNumber ?phoneNumber;
+                   vivo:faxNumber   ?fax;
+                   vivo:email ?email;
+                   fb:location ?location;
+                   rdfs:label ?personLabel.
+                   }
+WHERE {
+
+      GRAPH <http://vitro.mannlib.cornell.edu/default/vitro-kb-2>
+    {
+      {
+               ?person a vivo:FacultyMember .
+               ?person vivo:authorInAuthorship ?authorShip .
+               ?authorShip vivo:linkedInformationResource ?publication .
+               ?publication rdfs:label ?publicationLabel.
+      }
+      UNION
+      {
+               ?person a vivo:FacultyMember .
+               ?person vivo:hasInvestigatorRole ?role.
+               ?role vivo:roleContributesTo ?agreement . 
+               ?agreement rdfs:label ?agreementLabel.
+      }
+      UNION
+      {      
+               ?person rdfs:label ?personLabel.
+               ?person a vivo:FacultyMember.
+      }
+
+      UNION
+      {
+               ?person foaf:firstName ?firstName
+      }
+      UNION
+      {
+               ?person foaf:lastName ?lastName
+      } 
+      UNION
+      {
+               ?person vivo:researchOverview ?researchOverview
+      }
+       UNION
+      {
+               ?person a vivo:FacultyMember.
+               ?person vivo:overview ?overview
+      }
+
+      UNION
+      {
+               ?person a vivo:FacultyMember.
+               ?person vivo:personInPosition ?position .
+               ?position vivo:positionInOrganization ?org .
+               ?org     rdfs:label ?orgLabel
+      }
+      UNION
+      {
+               ?person a vivo:FacultyMember.
+               ?person fae:internationalLinkageRole ?role.
+               ?role vivo:roleIn ?internationalLinkage . 
+               ?internationalLinkage rdfs:label ?internationalLinkageLabel.
+      }
+      UNION
+      {
+               ?person a vivo:FacultyMember.
+               ?person fae:internationalLinkageRole ?role.
+               ?role vivo:roleIn ?internationalLinkage . 
+               ?internationalLinkage vivo:hasGeographicLocation ?country.
+	       ?country rdfs:label ?countryLabel.
+      }
+      UNION
+      {
+               ?person a vivo:FacultyMember.
+               ?person vivo:geographicFocus ?country.
+               ?country rdfs:label ?countryLabel.
+      }
+      UNION
+      {
+               ?person a vivo:FacultyMember.
+               ?role vivo:editorRoleOf ?person.
+               ?role rdfs:label ?editorRoleLabel.               
+      }   
+      UNION
+      {
+               ?person a vivo:FacultyMember.
+               ?person fae:hasExhibitorRole ?role.
+               ?role fae:exhibitorRoleIn ?exhibition. 
+               ?exhibition rdfs:label ?exhibitionLabel.
+      }
+      UNION
+      {
+                ?person a vivo:FacultyMember.
+                ?person vivo:email ?email
+      }
+      UNION
+      {
+                ?person a vivo:FacultyMember.
+                ?person vivo:faxNumber ?fax
+      }
+      UNION
+      {
+                ?person a vivo:FacultyMember.
+                ?person vivo:phoneNumber ?phoneNumber
+      }
+      UNION
+      {
+               ?person a vivo:FacultyMember.
+               ?person fae:hasPerformerRole ?role.
+               ?role fae:performerRoleIn ?performance. 
+               ?performance rdfs:label ?performanceLabel.
+      } 
+      UNION
+      {
+               ?person a vivo:FacultyMember.
+               ?person fae:hasCuratorRole ?role.
+               ?role fae:curatorRoleIn ?exhibition. 
+               ?exhibition rdfs:label ?curatedExhibitionLabel.
+      } 
+      UNION
+      {
+               ?person a vivo:FacultyMember .
+               ?person vivo:hasSubjectArea ?subjectArea.
+                   {
+                    GRAPH <http://vitro.mannlib.cornell.edu/filegraph/abox/for.n3>
+                     {?subjectArea rdfs:label ?subjectAreaLabel}
+                   }              
+                   UNION
+                   {
+                    GRAPH <http://vitro.mannlib.cornell.edu/filegraph/abox/seo2008.n3>
+                     {?subjectArea rdfs:label ?subjectAreaLabel}
+                   } 
+                   UNION
+                   {
+                    GRAPH <http://vitro.mannlib.cornell.edu/filegraph/abox/seo.n3>
+                     {?subjectArea rdfs:label ?subjectAreaLabel}
+                   } 
+                   UNION
+                   {
+                    GRAPH <http://vitro.mannlib.cornell.edu/filegraph/abox/rfcd.n3>
+                     {?subjectArea rdfs:label ?subjectAreaLabel}
+                   } 
+      }
+      UNION
+      {
+                ?person a vivo:FacultyMember.
+                ?person fae:hasMediaOnlyContact ?mediaOnly
+      }
+      UNION
+      {
+                ?person a vivo:FacultyMember.
+                ?person fae:homepage ?homepage
+      }
+      UNION
+      {         
+                ?person a vivo:FacultyMember.
+                ?person fae:availableForSupervision ?supervision
+      }
+      UNION
+      {
+                ?person a vivo:FacultyMember.
+                ?person fae:supervisorStatement ?supervision
+      }
+     UNION
+     {
+                ?person a vivo:FacultyMember.
+                ?person fae:gradResearchAddress ?gradResearchAddress
+     }
+     UNION
+     {         
+                ?person a vivo:FacultyMember.
+               ?person vitro-public:mainImage ?mainImage.
+                ?mainImage vitro-public:thumbnailImage ?thumbnailImage.
+                ?thumbnailImage vitro-public:directDownloadUrl ?thumbnailURL
+     }
+#     UNION
+#     {
+#               ?person vivo:mainImage ?mainImage.
+#	?mainImage vitro-public:thumbnail ?thumbnail.
+#	?thumbnail vitro-public:directDownloadUrl ?thumbnailURL.
+
+#     }
+     UNION
+     {
+               ?person a vivo:FacultyMember.
+               ?person fae:hasWorkLocation ?room.
+               ?room rdfs:label ?roomLabel.
+               ?room vivo:roomWithinBuilding ?building.
+               ?building rdfs:label ?buildingLabel.
+               ?building vivo:geographicallyWithin ?region.
+               ?region rdfs:label ?regionLabel.
+               LET(?location := fn:concat(?roomLabel,'<br/>',?buildingLabel,'<br/>',?regoinLabel))
+     }
+      LET(?url := str(?person)) .
+   }     
+}
+
+
