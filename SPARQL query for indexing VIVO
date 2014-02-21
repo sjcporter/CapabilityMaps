@@ -39,7 +39,7 @@ CONSTRUCT {?person fb:url         ?url;
                    }
 WHERE {
 
-      GRAPH <http://vitro.mannlib.cornell.edu/default/vitro-kb-2>
+    
     {
       {
                ?person a vivo:FacultyMember .
